@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>برنامه ورزشی هوشمند</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2E86AB;
+            --secondary: #F18F01;
+            --accent: #C73E1D;
+            --light: #F5F5F5;
+            --dark: #333;
+            --success: #48A14D;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .datetime {
+            text-align: left;
+            font-size: 1.1rem;
+        }
+        
+        .user-info-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .user-info-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .title {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 2.5rem;
+            color: var(--primary);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(46, 134, 171, 0.2);
+        }
+        
+        .btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            background-color: #e07f00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-start {
+            background-color: transparent;
+            display: block;
+            margin: 30px auto;
+            padding: 0;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+        
+        .btn-start img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid var(--accent);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-start:hover img {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(201, 62, 29, 0.5);
+        }
+        
+        .program-container {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .month-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .month-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .month-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .month-card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .month-card p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .progress {
+            height: 8px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .completed-days {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .completed-days i {
+            margin-left: 5px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 1.5rem;
+            color: #999;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        
+        .close-modal:hover {
+            color: var(--accent);
+        }
+        
+        .user-details {
+            margin-bottom: 20px;
+        }
+        
+        .user-details h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .detail-value {
+            color: #555;
+        }
+        
+        .bmi-indicator {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .underweight {
+            background-color: #FFEEBA;
+            color: #8a6d3b;
+        }
+        
+        .normal {
+            background-color: #C8E6C9;
+            color: #2E7D32;
+        }
+        
+        .overweight {
+            background-color: #FFCCBC;
+            color: #E64A19;
+        }
+        
+        .obese {
+            background-color: #FFCDD2;
+            color: #C62828;
+        }
+        
+        .program-modal h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .program-section {
+            margin-bottom: 20px;
+        }
+        
+        .program-section h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .exercise-list, .meal-plan {
+            list-style-type: none;
+            padding-left: 0;
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .exercise-list li, .meal-plan li {
+            padding: 8px 30px 8px 0;
+            border-bottom: 1px dashed #eee;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .exercise-list li::before, .meal-plan li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .exercise-list li:nth-child(1)::before {
+            content: "1";
+        }
+        .exercise-list li:nth-child(2)::before {
+            content: "2";
+        }
+        .exercise-list li:nth-child(3)::before {
+            content: "3";
+        }
+        .exercise-list li:nth-child(4)::before {
+            content: "4";
+        }
+        .exercise-list li:nth-child(5)::before {
+            content: "5";
+        }
+        .exercise-list li:nth-child(6)::before {
+            content: "6";
+        }
+        .exercise-list li:nth-child(7)::before {
+            content: "7";
+        }
+        .exercise-list li:nth-child(8)::before {
+            content: "8";
+        }
+        .exercise-list li:nth-child(9)::before {
+            content: "9";
+        }
+        .exercise-list li:nth-child(10)::before {
+            content: "10";
+        }
+        
+        .day-complete-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .day-complete-checkbox {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            margin-left: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .day-complete-checkbox:checked {
+            background-color: var(--success);
+            border-color: var(--success);
+        }
+        
+        .day-complete-checkbox:checked::after {
+            content: "✓";
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+        }
+        
+        .day-complete-label {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .day-complete-checkbox:checked + .day-complete-label {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .comments-section {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+        
+        .comments-section h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .comment-form {
+            margin-bottom: 30px;
+        }
+        
+        .comment-author-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        
+        .comment-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .comment-list {
+            list-style-type: none;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .comment-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .comment-author i {
+            margin-left: 8px;
+            color: var(--secondary);
+        }
+        
+        .comment-date {
+            font-size: 0.8rem;
+            color: #888;
+            margin-right: 10px;
+        }
+        
+        .comment-text {
+            color: #555;
+            margin-top: 10px;
+        }
+        
+        .motivation-section {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .motivation-section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .motivation-section h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+        
+        .motivation-text {
+            font-size: 1.2rem;
+            color: var(--dark);
+            font-style: italic;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding: 20px 0;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .footer-link {
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-link:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+        
+        .shooting-star {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px white;
+            animation: shooting 5s linear infinite;
+            opacity: 0;
+            z-index: -1;
+        }
+        
+        @keyframes shooting {
+            0% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(1000px, 500px);
+                opacity: 0;
+            }
+        }
+        
+        .welcome-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            text-align: center;
+            display: none;
+        }
+        
+        .welcome-message h2 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+        
+        .welcome-message p {
+            margin-bottom: 20px;
+        }
+        
+        .close-welcome {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .view-all-comments {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .month-5-card {
+            grid-column: 1 / -1;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .feel-lazy-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto;
+        }
+        
+        .feel-lazy-btn:hover {
+            background-color: #b5371a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .lazy-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .lazy-modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        .lazy-modal h2 {
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        .lazy-modal p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .close-lazy-modal {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .close-lazy-modal:hover {
+            background-color: #257394;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .datetime {
+                text-align: center;
+            }
+            
+            .month-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .month-5-card {
+                max-width: 100%;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="datetime" id="datetime">
+                    <!-- تاریخ و ساعت اینجا نمایش داده می‌شود -->
+                </div>
+                <button class="user-info-btn" id="userInfoBtn">
+                    <i class="fas fa-user"></i>
+                    اطلاعات کاربر
+                </button>
+            </div>
+        </header>
+        
+        <h1 class="title">برنامه ورزشی هوشمند</h1>
+        
+        <div class="user-form" id="userForm">
+            <div class="form-group">
+                <label for="userName">نام شما</label>
+                <input type="text" id="userName" placeholder="نام خود را وارد کنید">
+            </div>
+            
+            <div class="form-group">
+                <label for="userAge">سن</label>
+                <input type="number" id="userAge" placeholder="سن خود را وارد کنید" min="10" max="100">
+            </div>
+            
+            <div class="form-group">
+                <label for="userWeight">وزن (کیلوگرم)</label>
+                <input type="number" id="userWeight" placeholder="وزن خود را وارد کنید" min="30" max="200" step="0.1">
+            </div>
+            
+            <div class="form-group">
+                <label for="userHeight">قد (سانتی‌متر)</label>
+                <input type="number" id="userHeight" placeholder="قد خود را وارد کنید" min="120" max="250" step="0.1">
+            </div>
+            
+            <button class="btn" id="saveUserData">ذخیره اطلاعات</button>
+        </div>
+        
+        <button class="btn btn-start" id="startProgram" style="display: none;">
+            <img src="https://via.placeholder.com/120?text=Start" alt="شروع برنامه" id="startImage">
+        </button>
+        
+        <div class="program-container" id="programContainer">
+            <h2 class="title">برنامه‌های ماهانه</h2>
+            
+            <div class="month-cards">
+                <div class="month-card" data-month="1">
+                    <h3>ماه اول</h3>
+                    <p>برنامه مبتدی برای شروع ورزش</p>
+                    <div class="progress">
+                        <div class="progress-bar" id="progressMonth1"></div>
+                    </div>
+                    <div class="completed-days">
+                        <span id="completedDays1">0</span> روز تکمیل شده
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                
+                <div class="month-card" data-month="2">
+                    <h3>ماه دوم</h3>
+                    <p>برنامه متوسط برای پیشرفت</p>
+                    <div class="progress">
+                        <div class="progress-bar" id="progressMonth2"></div>
+                    </div>
+                    <div class="completed-days">
+                        <span id="completedDays2">0</span> روز تکمیل شده
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                
+                <div class="month-card" data-month="3">
+                    <h3>ماه سوم</h3>
+                    <p>برنامه پیشرفته برای چالش بیشتر</p>
+                    <div class="progress">
+                        <div class="progress-bar" id="progressMonth3"></div>
+                    </div>
+                    <div class="completed-days">
+                        <span id="completedDays3">0</span> روز تکمیل شده
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                
+                <div class="month-card" data-month="4">
+                    <h3>ماه چهارم</h3>
+                    <p>برنامه حرفه‌ای برای نتایج عالی</p>
+                    <div class="progress">
+                        <div class="progress-bar" id="progressMonth4"></div>
+                    </div>
+                    <div class="completed-days">
+                        <span id="completedDays4">0</span> روز تکمیل شده
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                
+                <div class="month-card month-5-card" data-month="5">
+                    <h3>ماه پنجم</h3>
+                    <p>برنامه تخصصی متناسب با شما</p>
+                    <div class="progress">
+                        <div class="progress-bar" id="progressMonth5"></div>
+                    </div>
+                    <div class="completed-days">
+                        <span id="completedDays5">0</span> روز تکمیل شده
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="feel-lazy-btn" id="feelLazyBtn">امروز حال ندارم</button>
+            
+            <div class="motivation-section" id="motivationSection">
+                <h2>جمله انگیزشی روز</h2>
+                <p class="motivation-text" id="motivationText"></p>
+            </div>
+            
+            <div class="comments-section">
+                <h2>از تجربیات ورزشی خود بگویید</h2>
+                <div class="comment-form">
+                    <input type="text" id="commentAuthor" class="comment-author-input" placeholder="نام شما (اختیاری)">
+                    <textarea id="commentInput" placeholder="تجربیات و نظرات خود را اینجا بنویسید..."></textarea>
+                    <button class="btn" id="submitComment">ارسال نظر</button>
+                </div>
+                <ul class="comment-list" id="commentList">
+                    <!-- نظرات اینجا نمایش داده می‌شوند -->
+                </ul>
+                <div class="view-all-comments">
+                    <button class="btn" id="viewAllComments">مشاهده تمام نظرات</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- مودال اطلاعات کاربر -->
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeUserModal">&times;</button>
+            <div class="user-details">
+                <h2>اطلاعات کاربر</h2>
+                <div class="detail-item">
+                    <span class="detail-label">نام:</span>
+                    <span class="detail-value" id="modalUserName">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">سن:</span>
+                    <span class="detail-value" id="modalUserAge">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">وزن اخیر:</span>
+                    <span class="detail-value" id="modalUserWeight">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">قد اخیر:</span>
+                    <span class="detail-value" id="modalUserHeight">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">شاخص توده بدنی (BMI):</span>
+                    <span class="detail-value" id="modalUserBMI">-</span>
+                </div>
+                <div id="bmiStatus" class="bmi-indicator">
+                    وضعیت BMI شما: محاسبه نشده
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">روزهای تکمیل شده:</span>
+                    <span class="detail-value" id="modalCompletedDays">0 روز</span>
+                </div>
+            </div>
+            <button class="btn" id="updateMeasurements">بروزرسانی وزن و قد</button>
+        </div>
+    </div>
+    
+    <!-- مودال برنامه ورزشی -->
+    <div class="modal" id="programModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeProgramModal">&times;</button>
+            <div class="program-modal">
+                <h2 id="programMonthTitle">برنامه ماه اول</h2>
+                
+                <div class="program-section">
+                    <h3>برنامه ورزشی</h3>
+                    <ul class="exercise-list" id="exerciseList">
+                        <!-- برنامه ورزشی اینجا نمایش داده می‌شود -->
+                    </ul>
+                </div>
+                
+                <div class="program-section">
+                    <h3>برنامه غذایی</h3>
+                    <ul class="meal-plan" id="mealPlan">
+                        <!-- برنامه غذایی اینجا نمایش داده می‌شود -->
+                    </ul>
+                </div>
+                
+                <div class="day-complete-container">
+                    <input type="checkbox" id="dayCompleteCheckbox" class="day-complete-checkbox">
+                    <label for="dayCompleteCheckbox" class="day-complete-label">امروز را تکمیل کردم</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- مودال بروزرسانی وزن و قد -->
+    <div class="modal" id="measurementModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeMeasurementModal">&times;</button>
+            <div class="user-form">
+                <h2>بروزرسانی وزن و قد</h2>
+                <div class="form-group">
+                    <label for="currentWeight">وزن فعلی (کیلوگرم)</label>
+                    <input type="number" id="currentWeight" placeholder="وزن خود را وارد کنید" min="30" max="200" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="currentHeight">قد فعلی (سانتی‌متر)</label>
+                    <input type="number" id="currentHeight" placeholder="قد خود را وارد کنید" min="120" max="250" step="0.1">
+                </div>
+                
+                <button class="btn" id="saveMeasurements">ذخیره اندازه‌گیری‌ها</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- مودال ارتباط با مربی -->
+    <div class="modal" id="coachModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeCoachModal">&times;</button>
+            <div class="user-details" style="text-align: center;">
+                <h2 style="color: var(--accent);">ارتباط با مربی</h2>
+                <p style="margin: 20px 0; font-size: 1.1rem;">برای دریافت برنامه تخصصی و مشاوره ورزشی با مربی تماس بگیرید</p>
+                <div style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; display: inline-block;">
+                    <i class="fas fa-phone" style="color: var(--primary); margin-left: 10px;"></i>
+                    <a href="tel:09102655884" style="color: var(--dark); text-decoration: none; font-size: 1.2rem; font-weight: 600;">09102655884</a>
+                </div>
+                <p style="margin-top: 20px; color: #666;">با کلیک روی شماره، شماره گیری انجام می‌شود</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- مودال نمایش تمام نظرات -->
+    <div class="modal" id="allCommentsModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeAllCommentsModal">&times;</button>
+            <div class="user-details">
+                <h2 style="color: var(--primary);">تمام نظرات کاربران</h2>
+                <ul class="comment-list" id="allCommentsList" style="max-height: 60vh;">
+                    <!-- تمام نظرات اینجا نمایش داده می‌شوند -->
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- مودال درباره برنامه -->
+    <div class="modal" id="aboutModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeAboutModal">&times;</button>
+            <div class="user-details" style="text-align: center;">
+                <h2 style="color: var(--primary);">درباره برنامه</h2>
+                <div style="text-align: left; direction: ltr; margin-top: 20px;">
+                    <p><strong>Smart Fitness Program</strong></p>
+                    <p>Version: 1.0.0</p>
+                    <p>Developed by: Ali Chalaki</p>
+                    <p>Created on: June 10, 2023</p>
+                    <p style="font-style: italic;">Designed with love ❤️</p>
+                    <p>This application is designed to help you achieve your fitness goals with personalized workout plans and nutrition guides.</p>
+                    <p>For any questions or support, please contact us.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- مودال امروز حال ندارم -->
+    <div class="lazy-modal" id="lazyModal">
+        <div class="lazy-modal-content">
+            <h2>انگیزه می‌خواهی؟</h2>
+            <p id="lazyMotivationText">
+                هر روز که ورزش می‌کنی، به نسخه بهتری از خودت تبدیل می‌شوی. حتی اگر امروز حال نداری، فقط ۵ دقیقه ورزش کن. همین حرکت کوچک می‌تواند روزت را تغییر دهد!
+            </p>
+            <button class="close-lazy-modal" id="closeLazyModal">متوجه شدم، شروع می‌کنم!</button>
+        </div>
+    </div>
+    
+    <!-- پیام خوش‌آمدگویی -->
+    <div class="welcome-message" id="welcomeMessage">
+        <h2>خوش آمدید!</h2>
+        <p>اطلاعات شما با موفقیت ثبت شد. حالا می‌توانید برنامه ورزشی خود را شروع کنید.</p>
+        <button class="close-welcome" id="closeWelcome">باشه</button>
+    </div>
+    
+    <footer class="footer">
+        <p>برنامه ورزشی هوشمند - طراحی شده توسط علی چالاکی</p>
+        <div class="footer-links">
+            <a href="#" class="footer-link" id="aboutLink">درباره برنامه</a>
+            <a href="#" class="footer-link" id="contactLink">ارتباط با مربی</a>
+        </div>
+    </footer>
+    
+    <script>
+        // داده‌های کاربر
+        let userData = {
+            name: '',
+            age: '',
+            weight: '',
+            height: '',
+            bmi: null,
+            bmiStatus: '',
+            lastUpdate: '',
+            completedDays: [0, 0, 0, 0, 0], // روزهای تکمیل شده برای هر ماه
+            comments: [] // نظرات کاربران
+        };
+        
+        // برنامه‌های ورزشی و غذایی برای هر ماه
+        const programs = {
+            1: {
+                title: "برنامه ماه اول (مبتدی)",
+                exercises: [
+                    "گرم کردن: 5 دقیقه پیاده‌روی یا نرمش سبک",
+                    "حرکات کششی: 10 دقیقه",
+                    "شنا روی زمین: 3 ست 8 تایی",
+                    "دراز و نشست: 3 ست 10 تایی",
+                    "اسکوات: 3 ست 10 تایی",
+                    "پلانک: 3 ست 20 ثانیه‌ای",
+                    "سرد کردن: 5 دقیقه حرکات کششی"
+                ],
+                meals: [
+                    "صبحانه: جو دوسر + شیر کم چرب + میوه تازه",
+                    "میان وعده: یک مشت آجیل خام",
+                    "ناهار: سینه مرغ گریل شده + برنج قهوه‌ای + سبزیجات بخارپز",
+                    "میان وعده: ماست یونانی + توت فرنگی",
+                    "شام: ماهی قزل‌آلا + کینوا + سالاد سبزیجات"
+                ]
+            },
+            2: {
+                title: "برنامه ماه دوم (متوسط)",
+                exercises: [
+                    "گرم کردن: 10 دقیقه دوچرخه ثابت",
+                    "حرکات کششی: 10 دقیقه",
+                    "شنا روی زمین: 4 ست 10 تایی",
+                    "دراز و نشست: 4 ست 15 تایی",
+                    "اسکوات: 4 ست 12 تایی",
+                    "پلانک: 3 ست 30 ثانیه‌ای",
+                    "لانگز: 3 ست 10 تایی برای هر پا",
+                    "سرد کردن: 5 دقیقه حرکات کششی"
+                ],
+                meals: [
+                    "صبحانه: املت سفیده تخم مرغ با اسفناج و قارچ + نان تست سبوس‌دار",
+                    "میان وعده: پروتئین شیک + موز",
+                    "ناهار: فیله گوساله بدون چربی + سیب زمینی شیرین + کلم بروکلی",
+                    "میان وعده: پنیر کوتاژ + بادام",
+                    "شام: سینه بوقلمون + کوینوا + سالاد اسفناج و گردو"
+                ]
+            },
+            3: {
+                title: "برنامه ماه سوم (پیشرفته)",
+                exercises: [
+                    "گرم کردن: 10 دقیقه طناب زدن",
+                    "حرکات کششی: 10 دقیقه",
+                    "شنا روی زمین: 4 ست 15 تایی",
+                    "دراز و نشست با وزنه: 4 ست 15 تایی",
+                    "اسکوات با وزنه: 4 ست 12 تایی",
+                    "پلانک: 3 ست 45 ثانیه‌ای",
+                    "لانگز با دمبل: 3 ست 12 تایی برای هر پا",
+                    "بارفیکس: 3 ست تا حد توان",
+                    "سرد کردن: 10 دقیقه حرکات کششی"
+                ],
+                meals: [
+                    "صبحانه: پنکیک پروتئین + کره بادام زمینی + بلوبری",
+                    "میان وعده: پروتئین بار خانگی",
+                    "ناهار: ماهی تن + سیب زمینی شیرین + سالاد کلم پیچ",
+                    "میان وعده: ماست ایسلندی + گردو + عسل",
+                    "شام: استیک گوشت بدون چربی + برنج وحشی + سبزیجات کبابی"
+                ]
+            },
+            4: {
+                title: "برنامه ماه چهارم (حرفه‌ای)",
+                exercises: [
+                    "گرم کردن: 15 دقیقه دویدن",
+                    "حرکات کششی پویا: 10 دقیقه",
+                    "شنا روی زمین با پرش: 4 ست 15 تایی",
+                    "دراز و نشست با وزنه: 4 ست 20 تایی",
+                    "اسکوات با هالتر: 4 ست 10 تایی",
+                    "پلانک: 3 ست 60 ثانیه‌ای",
+                    "لانگز پرشی: 3 ست 10 تایی برای هر پا",
+                    "بارفیکس: 4 ست تا حد توان",
+                    "دیپ: 3 ست 12 تایی",
+                    "سرد کردن: 10 دقیقه حرکات کششی"
+                ],
+                meals: [
+                    "1. صبحانه: جو دوسر + پودر پروتئین + کره بادام + دانه چیا",
+                    "2. میان وعده: سموتی پروتئین با اسفناج و میوه",
+                    "3. ناهار: سینه مرغ + کینوا + آووکادو + سبزیجات",
+                    "4. میان وعده: تخم مرغ آب‌پز + هوموس",
+                    "5. شام: ماهی سالمون + برنج قهوه‌ای + مارچوبه کبابی",
+                    "6. قبل خواب: کازئین میسلار + بادام"
+                ]
+            },
+            5: {
+                title: "برنامه ماه پنجم (تخصصی)",
+                exercises: [
+                    "برای دریافت برنامه غذایی و ورزشی متناسب شما و مشاوره راگان با مربی تماس بگیرید شماره 8585",
+                    "برنامه بر اساس پیشرفت و اهداف شما طراحی خواهد شد",
+                    "تمرینات پیشرفته و کاملاً متناسب با شرایط بدنی شما",
+                    "برنامه غذایی اختصاصی با توجه به نیازهای بدن شما",
+                    "پیگیری هفتگی و مشاوره تخصصی توسط مربی"
+                ],
+                meals: [
+                    "برای دریافت برنامه غذایی تخصصی با مربی تماس بگیرید",
+                    "برنامه غذایی بر اساس اهداف و شرایط بدنی شما طراحی می‌شود",
+                    "مشاوره تغذیه تخصصی توسط مربی",
+                    "برنامه مکمل‌های ورزشی (در صورت نیاز) ارائه می‌شود"
+                ]
+            }
+        };
+        
+        // جملات انگیزشی
+        const motivationalQuotes = [
+            "تنها راهی که به شکست منجر می‌شود، دست کشیدن از تلاش است. - البرت انیشتین",
+            "موفقیت همیشه با انضباط شخصی آغاز می‌شود. - جیم ران",
+            "شما هرگز برای شروع دوباره پیر نیستید. - جورج الیوت",
+            "تنها محدودیت‌های ما آنهایی هستند که در ذهن خود می‌سازیم. - ناپلئون هیل",
+            "هر روز که ورزش می‌کنید، به نسخه بهتری از خود تبدیل می‌شوید. - ناشناس",
+            "پیروزی از آن کسانی است که بیشترین مقاومت را دارند. - ناپلئون بناپارت",
+            "هیچ چیز غیرممکن نیست، خود کلمه می‌گوید 'من ممکنم'! - آدری هپبورن",
+            "قوی‌ترین افراد نه آنهایی هستند که همیشه پیروز می‌شوند، بلکه آنهایی هستند که وقتی می‌بازند تسلیم نمی‌شوند. - ناشناس",
+            "تنها بد تمرینی، تمرین نکردن است. - ناشناس",
+            "امروز کاری را انجام دهید که فردا از شما تشکر خواهد کرد. - لس براون"
+        ];
+        
+        // جملات انگیزشی برای وقتی حال ندارید
+        const lazyMotivationalQuotes = [
+            "حتی کوچکترین قدم هم بهتر از بی‌حرکتی است. همین حالا 5 دقیقه ورزش کن!",
+            "بدنت را حرکت بده، ذهنت را تغییر بده. همین امروز شروع کن!",
+            "تنها تمرینی که بی‌فایده است، تمرینی است که انجام نمی‌دهی. بلند شو و شروع کن!",
+            "هیچ وقت از ورزش کردن پشیمان نشده‌ای. فقط بلند شو و شروع کن!",
+            "امروز ممکن است سخت باشد، اما فردا از خودت برای این تلاش تشکر خواهی کرد.",
+            "شما قوی‌تر از آنچه فکر می‌کنید هستید. همین حالا ثابتش کن!",
+            "یک ساعت از روزت را به ورزش اختصاص بده، 23 ساعت دیگر را با انرژی بیشتری سپری کن.",
+            "موفقیت مجموعه‌ای از تلاش‌های کوچک روزانه است. امروز هم تلاش کن!",
+            "ورزش کردن مثل مسواک زدن است، اگر یک روز انجام ندهی متوجه می‌شوی، اگر یک هفته انجام ندهی دیگران متوجه می‌شوند!",
+            "هیچ وقت برای شروع دوباره دیر نیست. همین امروز تصمیم بگیر و شروع کن!"
+        ];
+        
+        // عناصر DOM
+        const userForm = document.getElementById('userForm');
+        const startProgramBtn = document.getElementById('startProgram');
+        const startImage = document.getElementById('startImage');
+        const programContainer = document.getElementById('programContainer');
+        const userInfoBtn = document.getElementById('userInfoBtn');
+        const userModal = document.getElementById('userModal');
+        const closeUserModal = document.getElementById('closeUserModal');
+        const programModal = document.getElementById('programModal');
+        const closeProgramModal = document.getElementById('closeProgramModal');
+        const measurementModal = document.getElementById('measurementModal');
+        const closeMeasurementModal = document.getElementById('closeMeasurementModal');
+        const updateMeasurementsBtn = document.getElementById('updateMeasurements');
+        const saveMeasurementsBtn = document.getElementById('saveMeasurements');
+        const dayCompleteCheckbox = document.getElementById('dayCompleteCheckbox');
+        const monthCards = document.querySelectorAll('.month-card');
+        const coachModal = document.getElementById('coachModal');
+        const closeCoachModal = document.getElementById('closeCoachModal');
+        const motivationSection = document.getElementById('motivationSection');
+        const motivationText = document.getElementById('motivationText');
+        const commentAuthor = document.getElementById('commentAuthor');
+        const commentInput = document.getElementById('commentInput');
+        const submitComment = document.getElementById('submitComment');
+        const commentList = document.getElementById('commentList');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const closeWelcome = document.getElementById('closeWelcome');
+        const aboutLink = document.getElementById('aboutLink');
+        const contactLink = document.getElementById('contactLink');
+        const viewAllCommentsBtn = document.getElementById('viewAllComments');
+        const allCommentsModal = document.getElementById('allCommentsModal');
+        const closeAllCommentsModal = document.getElementById('closeAllCommentsModal');
+        const allCommentsList = document.getElementById('allCommentsList');
+        const aboutModal = document.getElementById('aboutModal');
+        const closeAboutModal = document.getElementById('closeAboutModal');
+        const feelLazyBtn = document.getElementById('feelLazyBtn');
+        const lazyModal = document.getElementById('lazyModal');
+        const lazyMotivationText = document.getElementById('lazyMotivationText');
+        const closeLazyModal = document.getElementById('closeLazyModal');
+        
+        // ایجاد ستاره دنباله دار
+        function createShootingStar() {
+            const star = document.createElement('div');
+            star.className = 'shooting-star';
+            star.style.left = `${Math.random() * 100}px`;
+            star.style.top = `${Math.random() * 100}px`;
+            star.style.animationDuration = `${Math.random() * 3 + 3}s`;
+            star.style.animationDelay = `${Math.random() * 5}s`;
+            document.body.appendChild(star);
+            
+            setTimeout(() => {
+                star.remove();
+            }, 8000);
+        }
+        
+        // ایجاد چند ستاره دنباله دار
+        for (let i = 0; i < 5; i++) {
+            setTimeout(createShootingStar, i * 2000);
+        }
+        
+        // نمایش جمله انگیزشی تصادفی
+        function showRandomQuote() {
+            const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
+            motivationText.textContent = motivationalQuotes[randomIndex];
+        }
+        
+        // نمایش جمله انگیزشی برای وقتی حال ندارید
+        function showLazyMotivation() {
+            const randomIndex = Math.floor(Math.random() * lazyMotivationalQuotes.length);
+            lazyMotivationText.textContent = lazyMotivationalQuotes[randomIndex];
+            lazyModal.style.display = 'flex';
+        }
+        
+        // بستن مودال انگیزشی
+        closeLazyModal.addEventListener('click', function() {
+            lazyModal.style.display = 'none';
+        });
+        
+        // تاریخ و ساعت
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('datetime').textContent = now.toLocaleDateString('fa-IR', options);
+        }
+        
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+        
+        // ذخیره اطلاعات کاربر
+        document.getElementById('saveUserData').addEventListener('click', function() {
+            userData.name = document.getElementById('userName').value.trim();
+            userData.age = document.getElementById('userAge').value;
+            userData.weight = document.getElementById('userWeight').value;
+            userData.height = document.getElementById('userHeight').value;
+            
+            if (!userData.name || !userData.age || !userData.weight || !userData.height) {
+                alert('لطفاً تمام فیلدها را پر کنید');
+                return;
+            }
+            
+            // محاسبه BMI
+            calculateBMI();
+            
+            // ذخیره در localStorage
+            localStorage.setItem('fitnessUserData', JSON.stringify(userData));
+            
+            // نمایش دکمه شروع برنامه
+            startProgramBtn.style.display = 'block';
+            
+            // نمایش پیام خوش‌آمدگویی
+            welcomeMessage.style.display = 'block';
+            userForm.style.display = 'none';
+        });
+        
+        // بستن پیام خوش‌آمدگویی
+        closeWelcome.addEventListener('click', function() {
+            welcomeMessage.style.display = 'none';
+        });
+        
+        // محاسبه BMI
+        function calculateBMI() {
+            if (userData.weight && userData.height) {
+                const heightInMeters = userData.height / 100;
+                userData.bmi = (userData.weight / (heightInMeters * heightInMeters)).toFixed(1);
+                
+                // تعیین وضعیت BMI
+                if (userData.bmi < 18.5) {
+                    userData.bmiStatus = 'کمبود وزن';
+                } else if (userData.bmi >= 18.5 && userData.bmi < 25) {
+                    userData.bmiStatus = 'طبیعی';
+                } else if (userData.bmi >= 25 && userData.bmi < 30) {
+                    userData.bmiStatus = 'اضافه وزن';
+                } else {
+                    userData.bmiStatus = 'چاقی';
+                }
+            }
+        }
+        
+        // شروع برنامه ورزشی
+        startProgramBtn.addEventListener('click', function() {
+            programContainer.style.display = 'block';
+            startProgramBtn.style.display = 'none';
+            
+            // بارگذاری روزهای تکمیل شده از localStorage
+            const savedData = localStorage.getItem('fitnessUserData');
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                if (parsedData.completedDays) {
+                    userData.completedDays = parsedData.completedDays;
+                    updateProgressBars();
+                }
+                if (parsedData.comments) {
+                    userData.comments = parsedData.comments;
+                    loadComments();
+                }
+            }
+            
+            // نمایش جمله انگیزشی
+            showRandomQuote();
+        });
+        
+        // نمایش مودال اطلاعات کاربر
+        userInfoBtn.addEventListener('click', function() {
+            updateUserModal();
+            userModal.style.display = 'flex';
+        });
+        
+        // بستن مودال اطلاعات کاربر
+        closeUserModal.addEventListener('click', function() {
+            userModal.style.display = 'none';
+        });
+        
+        // بروزرسانی مودال اطلاعات کاربر
+        function updateUserModal() {
+            document.getElementById('modalUserName').textContent = userData.name || '-';
+            document.getElementById('modalUserAge').textContent = userData.age || '-';
+            document.getElementById('modalUserWeight').textContent = userData.weight ? `${userData.weight} کیلوگرم` : '-';
+            document.getElementById('modalUserHeight').textContent = userData.height ? `${userData.height} سانتی‌متر` : '-';
+            document.getElementById('modalUserBMI').textContent = userData.bmi || '-';
+            document.getElementById('modalCompletedDays').textContent = userData.completedDays.reduce((a, b) => a + b, 0) + ' روز';
+            
+            const bmiStatusElement = document.getElementById('bmiStatus');
+            bmiStatusElement.textContent = `وضعیت BMI شما: ${userData.bmiStatus || 'محاسبه نشده'}`;
+            bmiStatusElement.className = 'bmi-indicator';
+            
+            if (userData.bmiStatus) {
+                if (userData.bmiStatus === 'کمبود وزن') {
+                    bmiStatusElement.classList.add('underweight');
+                } else if (userData.bmiStatus === 'طبیعی') {
+                    bmiStatusElement.classList.add('normal');
+                } else if (userData.bmiStatus === 'اضافه وزن') {
+                    bmiStatusElement.classList.add('overweight');
+                } else if (userData.bmiStatus === 'چاقی') {
+                    bmiStatusElement.classList.add('obese');
+                }
+            }
+        }
+        
+        // باز کردن مودال بروزرسانی وزن و قد
+        updateMeasurementsBtn.addEventListener('click', function() {
+            measurementModal.style.display = 'flex';
+            userModal.style.display = 'none';
+        });
+        
+        // بستن مودال بروزرسانی وزن و قد
+        closeMeasurementModal.addEventListener('click', function() {
+            measurementModal.style.display = 'none';
+        });
+        
+        // ذخیره وزن و قد جدید
+        saveMeasurementsBtn.addEventListener('click', function() {
+            const currentWeight = document.getElementById('currentWeight').value;
+            const currentHeight = document.getElementById('currentHeight').value;
+            
+            if (!currentWeight || !currentHeight) {
+                alert('لطفاً وزن و قد خود را وارد کنید');
+                return;
+            }
+            
+            userData.weight = currentWeight;
+            userData.height = currentHeight;
+            userData.lastUpdate = new Date().toLocaleDateString('fa-IR');
+            
+            // محاسبه BMI جدید
+            calculateBMI();
+            
+            // ذخیره در localStorage
+            localStorage.setItem('fitnessUserData', JSON.stringify(userData));
+            
+            // بستن مودال و نمایش اطلاعات به‌روز شده
+            measurementModal.style.display = 'none';
+            updateUserModal();
+            userModal.style.display = 'flex';
+            
+            alert('اطلاعات وزن و قد با موفقیت به‌روزرسانی شد');
+        });
+        
+        // باز کردن مودال برنامه ورزشی برای هر ماه
+        monthCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const month = parseInt(this.getAttribute('data-month'));
+                loadProgram(month);
+                programModal.style.display = 'flex';
+            });
+        });
+        
+        // بستن مودال برنامه ورزشی
+        closeProgramModal.addEventListener('click', function() {
+            programModal.style.display = 'none';
+            dayCompleteCheckbox.checked = false;
+        });
+        
+        // بارگذاری برنامه ورزشی و غذایی
+        function loadProgram(month) {
+            const program = programs[month];
+            if (!program) return;
+            
+            document.getElementById('programMonthTitle').textContent = program.title;
+            
+            const exerciseList = document.getElementById('exerciseList');
+            exerciseList.innerHTML = '';
+            program.exercises.forEach(exercise => {
+                const li = document.createElement('li');
+                li.textContent = exercise;
+                exerciseList.appendChild(li);
+            });
+            
+            const mealPlan = document.getElementById('mealPlan');
+            mealPlan.innerHTML = '';
+            program.meals.forEach(meal => {
+                const li = document.createElement('li');
+                li.textContent = meal;
+                mealPlan.appendChild(li);
+            });
+            
+            // تنظیم ماه فعلی برای چک‌باکس تکمیل روز
+            dayCompleteCheckbox.setAttribute('data-month', month);
+        }
+        
+        // تکمیل یک روز از برنامه
+        dayCompleteCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                const month = parseInt(this.getAttribute('data-month'));
+                userData.completedDays[month - 1]++;
+                
+                // ذخیره در localStorage
+                localStorage.setItem('fitnessUserData', JSON.stringify(userData));
+                
+                // به‌روزرسانی نوارهای پیشرفت
+                updateProgressBars();
+                
+                // بستن مودال بعد از 1 ثانیه
+                setTimeout(() => {
+                    programModal.style.display = 'none';
+                    this.checked = false;
+                }, 1000);
+            }
+        });
+        
+        // به‌روزرسانی نوارهای پیشرفت
+        function updateProgressBars() {
+            for (let i = 1; i <= 5; i++) {
+                const days = userData.completedDays[i - 1];
+                const progress = Math.min((days / 30) * 100, 100);
+                
+                document.getElementById(`progressMonth${i}`).style.width = `${progress}%`;
+                document.getElementById(`completedDays${i}`).textContent = days;
+            }
+        }
+        
+        // نمایش جمله انگیزشی جدید با کلیک
+        motivationSection.addEventListener('click', showRandomQuote);
+        
+        // ارسال نظر جدید
+        submitComment.addEventListener('click', function() {
+            const commentText = commentInput.value.trim();
+            const authorName = commentAuthor.value.trim() || 'کاربر ناشناس';
+            
+            if (!commentText) {
+                alert('لطفاً نظر خود را وارد کنید');
+                return;
+            }
+            
+            const newComment = {
+                author: authorName,
+                text: commentText,
+                date: new Date().toLocaleDateString('fa-IR')
+            };
+            
+            userData.comments.unshift(newComment);
+            localStorage.setItem('fitnessUserData', JSON.stringify(userData));
+            
+            // بارگذاری نظرات
+            loadComments();
+            
+            // پاک کردن فیلدهای نظر
+            commentInput.value = '';
+            commentAuthor.value = '';
+            
+            alert('نظر شما با موفقیت ثبت شد');
+        });
+        
+        // بارگذاری نظرات
+        function loadComments() {
+            commentList.innerHTML = '';
+            
+            if (userData.comments && userData.comments.length > 0) {
+                // نمایش 3 نظر آخر
+                const recentComments = userData.comments.slice(0, 3);
+                
+                recentComments.forEach(comment => {
+                    const li = document.createElement('li');
+                    li.className = 'comment-item';
+                    
+                    const authorDiv = document.createElement('div');
+                    authorDiv.className = 'comment-author';
+                    
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-user';
+                    
+                    const author = document.createElement('span');
+                    author.textContent = comment.author;
+                    
+                    const date = document.createElement('span');
+                    date.className = 'comment-date';
+                    date.textContent = comment.date;
+                    
+                    authorDiv.appendChild(icon);
+                    authorDiv.appendChild(author);
+                    authorDiv.appendChild(date);
+                    
+                    const text = document.createElement('div');
+                    text.className = 'comment-text';
+                    text.textContent = comment.text;
+                    
+                    li.appendChild(authorDiv);
+                    li.appendChild(text);
+                    commentList.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.className = 'comment-item';
+                li.textContent = 'هنوز نظری ثبت نشده است. اولین نفری باشید که نظر می‌دهد!';
+                commentList.appendChild(li);
+            }
+        }
+        
+        // نمایش تمام نظرات
+        viewAllCommentsBtn.addEventListener('click', function() {
+            allCommentsList.innerHTML = '';
+            
+            if (userData.comments && userData.comments.length > 0) {
+                userData.comments.forEach(comment => {
+                    const li = document.createElement('li');
+                    li.className = 'comment-item';
+                    
+                    const authorDiv = document.createElement('div');
+                    authorDiv.className = 'comment-author';
+                    
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-user';
+                    
+                    const author = document.createElement('span');
+                    author.textContent = comment.author;
+                    
+                    const date = document.createElement('span');
+                    date.className = 'comment-date';
+                    date.textContent = comment.date;
+                    
+                    authorDiv.appendChild(icon);
+                    authorDiv.appendChild(author);
+                    authorDiv.appendChild(date);
+                    
+                    const text = document.createElement('div');
+                    text.className = 'comment-text';
+                    text.textContent = comment.text;
+                    
+                    li.appendChild(authorDiv);
+                    li.appendChild(text);
+                    allCommentsList.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.className = 'comment-item';
+                li.textContent = 'هنوز نظری ثبت نشده است.';
+                allCommentsList.appendChild(li);
+            }
+            
+            allCommentsModal.style.display = 'flex';
+        });
+        
+        // بستن مودال تمام نظرات
+        closeAllCommentsModal.addEventListener('click', function() {
+            allCommentsModal.style.display = 'none';
+        });
+        
+        // درباره برنامه
+        aboutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            aboutModal.style.display = 'flex';
+        });
+        
+        // بستن مودال درباره برنامه
+        closeAboutModal.addEventListener('click', function() {
+            aboutModal.style.display = 'none';
+        });
+        
+        // ارتباط با مربی از فوتر
+        contactLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            coachModal.style.display = 'flex';
+        });
+        
+        // بستن مودال ارتباط با مربی
+        closeCoachModal.addEventListener('click', function() {
+            coachModal.style.display = 'none';
+        });
+        
+        // دکمه امروز حال ندارم
+        feelLazyBtn.addEventListener('click', showLazyMotivation);
+        
+        // بارگذاری داده‌های ذخیره شده هنگام لود صفحه
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedData = localStorage.getItem('fitnessUserData');
+            if (savedData) {
+                userData = JSON.parse(savedData);
+                
+                // اگر اطلاعات کاربر ذخیره شده بود، فرم را نمایش نده
+                if (userData.name) {
+                    userForm.style.display = 'none';
+                    startProgramBtn.style.display = 'block';
+                    
+                    // اگر برنامه قبلاً شروع شده بود، محتوا را نمایش بده
+                    if (programContainer.style.display === 'block') {
+                        programContainer.style.display = 'block';
+                        startProgramBtn.style.display = 'none';
+                        showRandomQuote();
+                        loadComments();
+                        updateProgressBars();
+                    }
+                }
+            }
+            
+            // تنظیم عکس دکمه شروع
+            startImage.src = 'Start.png';
+        });
+    </script>
+</body>
+</html>
